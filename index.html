@@ -4,10 +4,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fashion 3D Experience - Urban Fashion Creator</title>
+    <title>Fashion 3D Experience - Urban Fashion</title>
 
     <!-- SEO Meta Tags -->
-    <meta name="description" content="Simulador de moda 3D profissional. Personalize seu avatar com Three.js.">
+    <meta name="description" content="Personalize sua modelo humana em 3D. Escolha rostos, roupas e acessórios.">
 
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -16,7 +16,7 @@
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Inter:wght@300;400;500&display=swap"
         rel="stylesheet">
 
-    <!-- External Libraries (CDN) -->
+    <!-- External Libraries -->
     <script async src="https://unpkg.com/es-module-shims@1.8.0/dist/es-module-shims.js"></script>
     <script type="importmap">
     {
@@ -33,48 +33,49 @@
 
 <body>
     <div id="app" class="app-container">
-        <!-- Loading Screen -->
+        <!-- Loader -->
         <div id="loader" class="loader-overlay">
             <div class="loader-content">
                 <h2 class="loader-title">Urban Fashion 3D</h2>
                 <div class="progress-bar">
                     <div id="progress-fill" class="progress-fill"></div>
                 </div>
-                <p id="loader-status">Carregando Modelo 3D...</p>
+                <p>Preparando Estúdio...</p>
             </div>
         </div>
 
-        <!-- Main 3D Container -->
         <main class="game-viewport">
             <canvas id="three-canvas"></canvas>
 
-            <!-- Overlay for Completion -->
             <div id="completion-overlay" class="completion-overlay hidden">
                 <div class="completion-card">
                     <h2>Desfile Completo!</h2>
-                    <p>O look está pronto para as passarelas urbanas.</p>
-                    <button id="reset-btn" class="secondary-button">Editar Novamente</button>
+                    <p>O look está pronto para a passarela.</p>
+                    <button id="reset-btn" class="secondary-button">Criar Outro</button>
                 </div>
             </div>
         </main>
 
-        <!-- UI Sidebar -->
         <aside class="ui-panel">
             <header class="ui-header">
-                <h1>Moda 3D</h1>
-                <p>EXPERIENCE v2.0</p>
+                <h1>Urban Fashion</h1>
+                <p>COLEÇÃO PRIMAVERA / VERÃO</p>
             </header>
 
+            <!-- Categorias baseadas no seu screenshot -->
             <nav class="categories-tabs">
-                <button class="tab-btn active" data-category="outfit">Roupas</button>
+                <button class="tab-btn active" data-category="skin">Pele</button>
+                <button class="tab-btn" data-category="makeup">Maquiagem</button>
+                <button class="tab-btn" data-category="nails">Unhas</button>
+                <button class="tab-btn" data-category="outfit">Roupas</button>
+                <button class="tab-btn" data-category="shoes">Sapatos</button>
                 <button class="tab-btn" data-category="hair">Cabelo</button>
-                <button class="tab-btn" data-category="skin">Pele</button>
-                <button class="tab-btn" data-category="makeup">Make</button>
+                <button class="tab-btn" data-category="accessories">Acessórios</button>
             </nav>
 
             <div class="options-container">
                 <div id="options-grid" class="options-grid">
-                    <!-- Items will be injected by script.js -->
+                    <!-- Rostos e Itens injetados aqui -->
                 </div>
             </div>
 
@@ -84,7 +85,6 @@
         </aside>
     </div>
 
-    <!-- Main Module -->
     <script type="module" src="script.js"></script>
 </body>
 

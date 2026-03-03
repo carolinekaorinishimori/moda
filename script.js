@@ -3,13 +3,14 @@ import { GLTFLoader } from 'three/addons/loaders/GLTFLoader.js';
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
 
 /**
- * Fashion 3D Experience - Human Model Version
+ * Urban Fashion 3D - Human Experience
+ * Versão com 10 Rostos dinâmicos
  */
 
 class FashionGame {
     constructor() {
         this.canvas = document.getElementById('three-canvas');
-        this.loaderBar = document.getElementById('progress-fill');
+        this.loaderFill = document.getElementById('progress-fill');
         this.loaderOverlay = document.getElementById('loader');
 
         this.scene = new THREE.Scene();
@@ -18,37 +19,26 @@ class FashionGame {
 
         this.avatar = null;
         this.meshes = {};
-        this.materials = {};
-        this.mixer = null;
         this.clock = new THREE.Clock();
-
-        // Configuration for Realistic Human Look
-        this.HUMAN_CONFIG = {
-            skinColor: 0xe8beac, // Realistic base skin tone
-            eyeColor: 0x3d2314,
-            hairColor: 0x221100
-        };
+        this.mixer = null;
 
         this.init();
     }
 
     async init() {
         this.setupRenderer();
-        this.setupCinematicLighting();
+        this.setupLighting();
         this.setupControls();
 
-        // Load the 3D Avatar (Expects a Rigged Human Model)
-        // FILE: C:\Users\26012211\Documents\GitHub\moda\assets\avatar_base.glb
+        // Carrega o modelo humano
         await this.loadModel('assets/avatar_base.glb');
 
         this.setupUI();
         this.animate();
 
         setTimeout(() => {
-            if (this.loaderOverlay) {
-                this.loaderOverlay.style.opacity = '0';
-                setTimeout(() => this.loaderOverlay.style.display = 'none', 800);
-            }
+            this.loaderOverlay.style.opacity = '0';
+            setTimeout(() => this.loaderOverlay.style.display = 'none', 800);
         }, 500);
     }
 
@@ -57,7 +47,6 @@ class FashionGame {
         this.renderer.setSize(width, window.innerHeight);
         this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
         this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         this.renderer.outputColorSpace = THREE.SRGBColorSpace;
         this.renderer.toneMapping = THREE.ACESFilmicToneMapping;
         this.renderer.toneMappingExposure = 1.2;
@@ -70,34 +59,25 @@ class FashionGame {
         });
     }
 
-    setupCinematicLighting() {
-        // High-end Portrait Lighting
-        this.scene.add(new THREE.AmbientLight(0xffffff, 0.4));
+    setupLighting() {
+        this.scene.add(new THREE.AmbientLight(0xffffff, 0.5));
 
-        const keyLight = new THREE.DirectionalLight(0xfff0dd, 2.0);
-        keyLight.position.set(5, 5, 5);
-        keyLight.castShadow = true;
-        keyLight.shadow.mapSize.set(2048, 2048);
-        this.scene.add(keyLight);
+        const mainLight = new THREE.DirectionalLight(0xfff5e1, 1.5);
+        mainLight.position.set(5, 5, 5);
+        mainLight.castShadow = true;
+        this.scene.add(mainLight);
 
-        const wrapLight = new THREE.PointLight(0xffffff, 0.8);
-        wrapLight.position.set(-5, 3, 2);
-        this.scene.add(wrapLight);
-
-        const rimLight = new THREE.SpotLight(0xffffff, 8);
+        const rimLight = new THREE.SpotLight(0xffffff, 5);
         rimLight.position.set(0, 5, -8);
-        rimLight.target.position.set(0, 1, 0);
         this.scene.add(rimLight);
     }
 
     setupControls() {
         this.controls = new OrbitControls(this.camera, this.renderer.domElement);
         this.controls.enableDamping = true;
-        this.controls.dampingFactor = 0.05;
         this.controls.minDistance = 2.5;
         this.controls.maxDistance = 5;
-        this.controls.target.set(0, 1.2, 0); // Focus on the model's upper body/face
-
+        this.controls.target.set(0, 1.4, 0);
         this.camera.position.set(0, 1.6, 3.5);
     }
 
@@ -115,97 +95,104 @@ class FashionGame {
                             child.receiveShadow = true;
                             this.meshes[child.name] = child;
 
-                            // Apply realistic human/skin material
-                            const isSkin = child.name.toLowerCase().includes('skin') || child.name.toLowerCase().includes('body');
-                            child.material = new THREE.MeshStandardMaterial({
-                                color: isSkin ? this.HUMAN_CONFIG.skinColor : 0xdddddd,
-                                roughness: isSkin ? 0.7 : 0.9,
-                                metalness: isSkin ? 0.02 : 0,
-                                envMapIntensity: 1.0
-                            });
+                            // Material de pele humano inicial
+                            if (child.name.toLowerCase().includes('skin') || child.name.toLowerCase().includes('body')) {
+                                child.material = new THREE.MeshStandardMaterial({
+                                    color: 0xe8beac,
+                                    roughness: 0.8
+                                });
+                            }
                         }
                     });
 
                     if (gltf.animations.length > 0) {
                         this.mixer = new THREE.AnimationMixer(this.avatar);
-                        this.animations = gltf.animations;
                     }
                     resolve();
                 },
                 (xhr) => {
-                    if (this.loaderBar) {
-                        const percent = (xhr.loaded / xhr.total) * 100;
-                        this.loaderBar.style.width = percent + '%';
-                    }
+                    const p = (xhr.loaded / xhr.total) * 100;
+                    if (this.loaderFill) this.loaderFill.style.width = p + '%';
                 },
                 (error) => {
-                    console.warn('Model not found. Creating Human Placeholder Geometry.');
-                    this.createHumanPlaceholder();
+                    this.createPlaceholderHuman();
                     resolve();
                 }
             );
         });
     }
 
-    createHumanPlaceholder() {
+    createPlaceholderHuman() {
         const group = new THREE.Group();
-        const skinMat = new THREE.MeshStandardMaterial({ color: this.HUMAN_CONFIG.skinColor, roughness: 0.7 });
-
-        // Torso
-        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.7, 0.25), skinMat);
-        torso.position.y = 1.35;
-        group.add(torso);
-
-        // Head
-        const head = new THREE.Mesh(new THREE.SphereGeometry(0.18, 16, 16), skinMat);
-        head.position.y = 1.85;
-        group.add(head);
-
-        // Limbs (demonstrative)
-        const limbGeo = new THREE.CylinderGeometry(0.08, 0.06, 0.8);
-        const lLeg = new THREE.Mesh(limbGeo, skinMat); lLeg.position.set(-0.15, 0.6, 0); group.add(lLeg);
-        const rLeg = new THREE.Mesh(limbGeo, skinMat); rLeg.position.set(0.15, 0.6, 0); group.add(rLeg);
-
+        const mat = new THREE.MeshStandardMaterial({ color: 0xe8beac });
+        const torso = new THREE.Mesh(new THREE.BoxGeometry(0.5, 0.8, 0.3), mat);
+        torso.position.y = 1.3;
+        const head = new THREE.Mesh(new THREE.SphereGeometry(0.18), mat);
+        head.position.y = 1.8;
+        group.add(torso, head);
         this.avatar = group;
         this.scene.add(this.avatar);
-        this.meshes['Body'] = torso; // for testing customization
+        this.meshes['Body'] = torso;
+        this.meshes['Head'] = head;
     }
 
     applyTexture(partName, textureUrl) {
-        const target = this.meshes[partName] || this.avatar;
+        // Tenta aplicar na malha 'Body' ou 'Head' se o nome do arquivo indicar pele/rosto
+        const target = this.meshes[partName] || this.meshes['Body'] || this.meshes['Head'];
         if (!target) return;
 
         new THREE.TextureLoader().load(textureUrl, (tex) => {
             tex.flipY = false;
             tex.colorSpace = THREE.SRGBColorSpace;
-            if (target.material) {
-                target.material.map = tex;
-                target.material.color.set(0xffffff); // Clear base color when texture is applied
-                target.material.needsUpdate = true;
-            }
+            target.material.map = tex;
+            target.material.color.set(0xffffff);
+            target.material.needsUpdate = true;
         });
     }
 
     setupUI() {
         const grid = document.getElementById('options-grid');
+
+        // Base de dados com as 7 categorias e os 10 rostos divididos
         const items = {
+            skin: [
+                { name: 'Rosto 1', mesh: 'Body', tex: 'assets/skin/rosto_1.png' },
+                { name: 'Rosto 2', mesh: 'Body', tex: 'assets/skin/rosto_2.png' },
+                { name: 'Rosto 3', mesh: 'Body', tex: 'assets/skin/rosto_3.png' },
+                { name: 'Rosto 4', mesh: 'Body', tex: 'assets/skin/rosto_4.png' },
+                { name: 'Rosto 5', mesh: 'Body', tex: 'assets/skin/rosto_5.png' },
+                { name: 'Rosto 6', mesh: 'Body', tex: 'assets/skin/rosto_6.png' },
+                { name: 'Rosto 7', mesh: 'Body', tex: 'assets/skin/rosto_7.png' },
+                { name: 'Rosto 8', mesh: 'Body', tex: 'assets/skin/rosto_8.png' },
+                { name: 'Rosto 9', mesh: 'Body', tex: 'assets/skin/rosto_9.png' },
+                { name: 'Rosto 10', mesh: 'Body', tex: 'assets/skin/rosto_10.png' }
+            ],
+            makeup: [
+                { name: 'Natural', mesh: 'Body', tex: 'assets/makeup/makeup_natural.png' },
+                { name: 'Bold', mesh: 'Body', tex: 'assets/makeup/makeup_bold.png' }
+            ],
+            nails: [
+                { name: 'Vermelha', mesh: 'Body', tex: 'assets/nails/nails_red.png' }
+            ],
             outfit: [
-                { name: 'Seda Branca', mesh: 'Body', tex: 'assets/textures/top_white.jpg' },
-                { name: 'Veludo Preto', mesh: 'Body', tex: 'assets/textures/top_black.jpg' }
+                { name: 'Top Branco', mesh: 'Body', tex: 'assets/clothing/top_white.jpg' },
+                { name: 'Preto Chic', mesh: 'Body', tex: 'assets/clothing/top_black.jpg' }
+            ],
+            shoes: [
+                { name: 'Tênis', mesh: 'Body', tex: 'assets/shoes/sneakers.png' }
             ],
             hair: [
-                { name: 'Loiro Natural', mesh: 'Hair', tex: 'assets/textures/hair_blonde.jpg' },
-                { name: 'Castanho Escuro', mesh: 'Hair', tex: 'assets/textures/hair_black.jpg' }
+                { name: 'Loiro', mesh: 'Hair', tex: 'assets/hair/hair_blonde.jpg' },
+                { name: 'Preto', mesh: 'Hair', tex: 'assets/hair/hair_black.jpg' }
             ],
-            skin: [
-                { name: 'Pele Clara', mesh: 'Body', tex: 'assets/textures/skin_fair.jpg' },
-                { name: 'Pele Bronzeada', mesh: 'Body', tex: 'assets/textures/skin_tan.jpg' }
+            accessories: [
+                { name: 'Óculos', mesh: 'Acc', tex: 'assets/accessories/glasses.png' }
             ]
         };
 
         const render = (cat) => {
             grid.innerHTML = '';
-            items[cat].forEach(item => {
+            (items[cat] || []).forEach(item => {
                 const card = document.createElement('div');
                 card.className = 'option-card';
                 card.innerHTML = `<div class="thumb-preview"></div><p>${item.name}</p>`;
@@ -222,28 +209,17 @@ class FashionGame {
             };
         });
 
-        document.getElementById('finish-btn').onclick = () => this.finish();
-        render('outfit');
-    }
-
-    finish() {
-        document.getElementById('completion-overlay').classList.remove('hidden');
-        // Simple forward move
-        let pos = 0;
-        const walk = () => {
-            if (pos < 1) {
-                pos += 0.01;
-                this.avatar.position.z += 0.05;
-                requestAnimationFrame(walk);
-            }
+        document.getElementById('finish-btn').onclick = () => {
+            document.getElementById('completion-overlay').classList.remove('hidden');
+            this.avatar.position.z += 1; // Pequeno movimento de saída
         };
-        walk();
+
+        render('skin'); // Inicia na pele para ver os novos rostos
     }
 
     animate() {
         requestAnimationFrame(() => this.animate());
-        const delta = this.clock.getDelta();
-        if (this.mixer) this.mixer.update(delta);
+        if (this.mixer) this.mixer.update(this.clock.getDelta());
         this.controls.update();
         this.renderer.render(this.scene, this.camera);
     }
