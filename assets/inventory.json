@@ -1,0 +1,173 @@
+{
+    "categories": [
+        {
+            "id": "skin",
+            "name": "Pele",
+            "layerIndex": 10,
+            "items": [
+                {
+                    "id": "skin_gray",
+                    "name": "Base Cinza",
+                    "path": "assets/skin/skin_gray.png"
+                },
+                {
+                    "id": "skin_pale",
+                    "name": "Clara",
+                    "path": "assets/skin/skin_pale.png"
+                },
+                {
+                    "id": "skin_tan",
+                    "name": "Bronzeada",
+                    "path": "assets/skin/skin_tan.png"
+                }
+            ]
+        },
+        {
+            "id": "makeup",
+            "name": "Maquiagem",
+            "layerIndex": 20,
+            "items": [
+                {
+                    "id": "makeup_none",
+                    "name": "Natural",
+                    "path": "assets/makeup/makeup_natural.png"
+                },
+                {
+                    "id": "makeup_bold",
+                    "name": "Vibrante",
+                    "path": "assets/makeup/makeup_bold.png"
+                },
+                {
+                    "id": "makeup_dark",
+                    "name": "Gótica",
+                    "path": "assets/makeup/makeup_dark.png"
+                }
+            ]
+        },
+        {
+            "id": "nails",
+            "name": "Unhas",
+            "layerIndex": 30,
+            "items": [
+                {
+                    "id": "nails_neutral",
+                    "name": "Neutra",
+                    "path": "assets/nails/nails_neutral.png"
+                },
+                {
+                    "id": "nails_red",
+                    "name": "Vermelha",
+                    "path": "assets/nails/nails_red.png"
+                },
+                {
+                    "id": "nails_black",
+                    "name": "Preta",
+                    "path": "assets/nails/nails_black.png"
+                }
+            ]
+        },
+        {
+            "id": "clothing",
+            "name": "Roupas",
+            "layerIndex": 40,
+            "items": [
+                {
+                    "id": "top_white",
+                    "name": "Blusa Branca",
+                    "path": "assets/clothing/top_white.png"
+                },
+                {
+                    "id": "top_black",
+                    "name": "Top Preto",
+                    "path": "assets/clothing/top_black.png"
+                },
+                {
+                    "id": "dress_pink",
+                    "name": "Vestido Rosa",
+                    "path": "assets/clothing/dress_pink.png"
+                },
+                {
+                    "id": "pants_jeans",
+                    "name": "Jeans",
+                    "path": "assets/clothing/pants_jeans.png"
+                }
+            ]
+        },
+        {
+            "id": "shoes",
+            "name": "Sapatos",
+            "layerIndex": 50,
+            "items": [
+                {
+                    "id": "shoes_none",
+                    "name": "Descalça",
+                    "path": "assets/shoes/shoes_none.png"
+                },
+                {
+                    "id": "sneakers",
+                    "name": "Tênis",
+                    "path": "assets/shoes/sneakers.png"
+                },
+                {
+                    "id": "heels",
+                    "name": "Salto",
+                    "path": "assets/shoes/heels.png"
+                }
+            ]
+        },
+        {
+            "id": "hair",
+            "name": "Cabelo",
+            "layerIndex": 60,
+            "items": [
+                {
+                    "id": "hair_none",
+                    "name": "Sem Cabelo",
+                    "path": "assets/hair/hair_none.png"
+                },
+                {
+                    "id": "hair_blonde",
+                    "name": "Loiro",
+                    "path": "assets/hair/hair_blonde.png"
+                },
+                {
+                    "id": "hair_brown",
+                    "name": "Castanho",
+                    "path": "assets/hair/hair_brown.png"
+                },
+                {
+                    "id": "hair_black",
+                    "name": "Preto",
+                    "path": "assets/hair/hair_black.png"
+                }
+            ]
+        },
+        {
+            "id": "accessories",
+            "name": "Acessórios",
+            "layerIndex": 70,
+            "items": [
+                {
+                    "id": "acc_none",
+                    "name": "Nenhum",
+                    "path": "assets/accessories/acc_none.png"
+                },
+                {
+                    "id": "glasses",
+                    "name": "Óculos",
+                    "path": "assets/accessories/glasses.png"
+                },
+                {
+                    "id": "earrings",
+                    "name": "Brincos",
+                    "path": "assets/accessories/earrings.png"
+                },
+                {
+                    "id": "necklace",
+                    "name": "Colar",
+                    "path": "assets/accessories/necklace.png"
+                }
+            ]
+        }
+    ]
+}
